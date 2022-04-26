@@ -95,7 +95,7 @@ export const Item = React.memo(
               handle && styles.withHandle,
               dragOverlay && styles.dragOverlay,
               disabled && styles.disabled,
-              color && styles.color
+              // color && styles.color
             )}
             style={style}
             data-cypress="draggable-item"

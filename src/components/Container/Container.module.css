@@ -11,22 +11,33 @@ using https://jsonformatter.org/scss-to-css
   box-sizing: border-box;
   appearance: none;
   outline: none;
-  min-width: 350px;
-  margin: 10px;
+  /* min-width: 350px; */
+  /* margin: 10px; */
   border-radius: 5px;
-  min-height: 200px;
+  /* min-height: 200px; */
   transition: background-color 350ms ease;
   background-color: rgba(246, 246, 246, 1);
   border: 1px solid rgba(0, 0, 0, 0.05);
   font-size: 1em;
+  /* overflow-y: auto; */
+  /* height: 100% */
+  max-height: 100vh;
 }
 .Container ul {
   display: grid;
-  grid-gap: 10px;
+  /* grid-area: 2 / 1 / 2 / 4; */
+  grid-gap: 10px 5px;
+  /* justify-content: center; */
+  justify-items: center;
   grid-template-columns: repeat(var(--columns, 1), 1fr);
-  list-style: none;
-  padding: 20px;
-  margin: 0;
+  /* list-style: inside; */
+  /* padding: 20px; */
+  padding: 10px 10px;
+  margin: 0px;
+  border: 0px;
+  text-align: center;
+  list-style-type: none;
+  text-align: center;
 }
 .Container.scrollable ul {
   overflow-y: auto;
