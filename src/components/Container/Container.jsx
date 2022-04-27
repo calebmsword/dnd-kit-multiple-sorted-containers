@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import {Handle, Remove} from '../Item';
 
 import styles from './Container.module.css';
+import { AddAbove } from '../Item/components/AddAbove';
+import { AddBelow } from '../Item/components/AddBelow';
 
 export const Container = forwardRef(
   (
@@ -53,8 +55,10 @@ export const Container = forwardRef(
           <div className={styles.Header}>
             {label}
             <div className={styles.Actions}>
+              {/* <AddAbove />
+              <AddBelow /> */}
               {onRemove ? <Remove onClick={onRemove} /> : undefined}
-              <Handle {...handleProps} />
+              {/* <Handle {...handleProps} /> */}
             </div>
           </div>
         ) : null}

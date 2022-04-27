@@ -37,6 +37,7 @@ export function DroppableContainer({
   return (
     <Container
       ref={disabled ? undefined : setNodeRef}
+      // ref={undefined}
       style={{
         ...style,
         transition,

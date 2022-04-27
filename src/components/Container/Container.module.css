@@ -27,8 +27,8 @@ using https://jsonformatter.org/scss-to-css
   display: grid;
   /* grid-area: 2 / 1 / 2 / 4; */
   grid-gap: 10px 5px;
-  /* justify-content: center; */
-  justify-items: center;
+  justify-content: start;
+  /* justify-items: center; */
   grid-template-columns: repeat(var(--columns, 1), 1fr);
   /* list-style: inside; */
   /* padding: 20px; */
@@ -92,9 +92,9 @@ using https://jsonformatter.org/scss-to-css
 .Actions {
   display: flex;
 }
-.Actions > *:first-child:not(:last-child) {
+/* .Actions > *:first-child:not(:last-child) {
   opacity: 0;
 }
 .Actions > *:first-child:not(:last-child):focus-visible {
   opacity: 1;
-}
+} */

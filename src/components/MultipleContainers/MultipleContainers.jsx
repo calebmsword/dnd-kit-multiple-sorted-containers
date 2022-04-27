@@ -3,7 +3,7 @@ import {createPortal, unstable_batchedUpdates} from 'react-dom';
 import {
   // CancelDrop,
   closestCenter,
-  closestCorners,
+  // closestCorners,
   pointerWithin,
   rectIntersection,
   // CollisionDetection,
@@ -26,9 +26,9 @@ import {
 import {
   // AnimateLayoutChanges,
   SortableContext,
-  useSortable,
+  // useSortable,
   arrayMove,
-  defaultAnimateLayoutChanges,
+  // defaultAnimateLayoutChanges,
   verticalListSortingStrategy,
   // SortingStrategy,
   horizontalListSortingStrategy,
@@ -48,23 +48,24 @@ import { SortableItem } from '../SortableItem'
 
 import { getColor } from '../../utilities';
 
-import { Trash } from '../Trash';
+// import { Trash } from '../Trash';
 
 import Split from 'react-split';
 
 import './MultipleContainers.css'
+
+import { characterList, findCharacterById, characters } from '../../entities/characters';
 
 const dropAnimation = {
   ...defaultDropAnimation,
   dragSourceOpacity: 0.5,
 };
 
-
 export const TRASH_ID = 'void';
 const PLACEHOLDER_ID = 'placeholder';
-const empty = [];
-  
-  
+// const empty = [];
+
+
 
 export function MultipleContainers({
   adjustScale = false,
@@ -81,20 +82,50 @@ export function MultipleContainers({
   modifiers,
   renderItem,
   strategy = verticalListSortingStrategy,
-  trashable = false,
+  // trashable = false,
   vertical = false,
   scrollable,
 }) {
-  const [items, setItems] = useState(
+  const [items, setItems] = useState(   
     () =>
       initialItems ?? {
-        A: createRange(itemCount, (index) => `A${index + 1}`),
-        B: createRange(itemCount, (index) => `B${index + 1}`),
-        C: createRange(itemCount, (index) => `C${index + 1}`),
-        D: createRange(itemCount, (index) => `D${index + 1}`),
+        unplaced: characterList.map(item => item.id.toString()),
+        // unsure: [],
+        // minus6: [],
+        // minus5point5: [],
+        // minus5: [],
+        // minus4point5: [],
+        // minus4: [],
+        // minus3point5: [],
+        // minus3: [],
+        // minus2point5: [],
+        minus2: [],
+        // minus1point5: [],
+        minus1: [],
+        // minus0point5: [],
+        even: [],
+        // plus0point5: [],
+        plus1: [],
+        // plus1point5: [],
+        plus2: [],
+        // plus2point5: [],
+        // plus3: [],
+        // plus3point5: [],
+        // plus4: [],
+        // plus4point5: [],
+        // plus5: [],
+        // plus5point5: [],
+        // plus6: [],
+        // A: createRange(itemCount, (index) => `A${index + 1}`),
+        // B: createRange(itemCount, (index) => `B${index + 1}`),
+        // C: createRange(itemCount, (index) => `C${index + 1}`),
+        // D: createRange(itemCount, (index) => `D${index + 1}`),
         // E: createRange(itemCount, (index) => `D${index + 1}`),
+        // A: characterList.map(item => item.id.toString()),
+        // B: [],
       }
   );
+  
   const [containers, setContainers] = useState(Object.keys(items));
   const [activeId, setActiveId] = useState(null);
   const lastOverId = useRef(null);
@@ -110,6 +141,25 @@ export function MultipleContainers({
   
   const [leftPanelColumns, setLeftPanelColumns] = useState()
   const [rightPanelColumns, setRightPanelColumns] = useState()
+
+  // const [tierIsShowing, setTierIsShowing] = useState( () => {
+  //   const result = {}
+  //   for (const containerLabel in items ) {
+  //     if (['unplaced', 'minus2', 'minus1', 'even', 'plus1', 'plus2'].some( str => str.includes(containerLabel))) {
+  //       result[containerLabel] = true
+  //     } else {
+  //       result[containerLabel] = false
+  //     }
+  //   }
+  //   return result
+  // })
+
+  // const handleRemove = (containerId) => {
+  //   setTierIsShowing({
+  //     ...tierIsShowing,
+  //     [containerId]: false
+  //   })
+  // }
 
   /**
    * Custom collision detection strategy optimized for multiple containers
@@ -246,10 +296,20 @@ export function MultipleContainers({
     return Math.floor(fixedWidth/(itemWidth + 2*gridGap))
   }
 
-  useEffect( () => {
+  const updatePanelWidths = () => {
     setLeftPanelColumns(determinePanelColumns(leftPanelRef))
     setRightPanelColumns(determinePanelColumns(rightPanelRef))
+  }
+
+  useEffect( () => {
+    updatePanelWidths()
   }, [leftPanelWidth, rightPanelWidth])
+  
+  useEffect( () => {
+    window.addEventListener('resize', updatePanelWidths)
+    return () => window.removeEventListener('resize', updatePanelWidths);
+  }, [updatePanelWidths])
+
 
   return (
     <DndContext
@@ -422,30 +482,36 @@ export function MultipleContainers({
             className='header'
             style={{
               height: '100px',
-              backgroundColor: 'black',
+              backgroundColor: '#264040',
               color: 'white',
-              textAlign: 'center',
+              // textAlign: 'center',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center'
-            }}>
-            Header
-          </div>
-          <div style={{
-            overflowY: 'auto',
-            height: 'calc(100vh - 100px)'
             }}
           >
-            <SortableContext
+            <div>back button</div>
+            <img width='100' src='https://dynamic.brandcrowd.com/asset/logo/c3cf1bd1-4261-4d85-a6c6-52dbce75799d/logo-search-grid-1x?v=637678103961270000' />
+            <div style={{margin: '0px 5px'}}>Options</div>
+            <div style={{margin: '0px 5px'}}>Add Tier</div>
+          </div>
+          <div 
+            style={{
+              overflowY: 'auto',
+              height: 'calc(100vh - 100px)'
+            }}
+          >
+            {/* <SortableContext
               items={[...containers, PLACEHOLDER_ID]}
               strategy={
                 vertical
                   ? verticalListSortingStrategy
                   : horizontalListSortingStrategy
               }
-            >
+            > */}
               {containers.map((containerId, index) => {
                 if (index === 0) return;
+                {/* if (!tierIsShowing[containerId]) return; */}
                 return (
                   <DroppableContainer
                     key={containerId}
@@ -490,42 +556,74 @@ export function MultipleContainers({
                   + Add column
                 </DroppableContainer>
               )} */}
-            </SortableContext>
+            {/* </SortableContext> */}
           </div>
           
           
         </div>
-        <div ref={rightPanelRef}>
-          <DroppableContainer
-            key={containers.at(0)}
-            id={containers.at(0)}
-            label={minimal ? undefined : `Column ${containers.at(0)}`}
-            columns={rightPanelColumns}
-            items={items[containers.at(0)]}
-            scrollable={scrollable}
-            style={containerStyle}
-            unstyled={minimal}
-            onRemove={() => handleRemove(containers.at(0))}
+        <div 
+          ref={rightPanelRef}
+          style={{
+            // display: 'inline-grid',
+            boxSizing: 'border-box',
+            // padding: 20,
+            gridAutoFlow: vertical ? 'row' : 'column',
+            height: '100%',
+          }}
+        >
+          <div 
+            // className='header2'
+            style={{
+              height: '50px',
+              backgroundColor: 'DarkSlateGray',
+              color: 'white',
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+            <input type='text' placeholder='search bar'/> <button>sort</button>
+          </div>
+          <div
+            // className='unplacedCharacters'
+            style={{
+              overflowY: 'auto',
+              height: 'calc(100vh - 50px)'
+              // height: '700px',
+            }}
           >
-            <SortableContext items={items[containers.at(0)]} strategy={strategy}>
-              {items[containers.at(0)].map((value, index) => {
-                return (
-                  <SortableItem
-                    disabled={isSortingContainer}
-                    key={value}
-                    id={value}
-                    index={index}
-                    handle={handle}
-                    style={getItemStyles}
-                    wrapperStyle={wrapperStyle}
-                    renderItem={renderItem}
-                    containerId={containers.at(0)}
-                    getIndex={getIndex}
-                  />
-                );
-              })}
-            </SortableContext>
-          </DroppableContainer>
+            <DroppableContainer
+              key={containers.at(0)}
+              id={containers.at(0)}
+              label={minimal ? undefined : `Column ${containers.at(0)}`}
+              columns={rightPanelColumns}
+              items={items[containers.at(0)]}
+              scrollable={scrollable}
+              style={containerStyle}
+              unstyled={minimal}
+              onRemove={() => handleRemove(containers.at(0))}
+            >
+              <SortableContext items={items[containers.at(0)]} strategy={strategy}>
+                {items[containers.at(0)].map((value, index) => {
+                  return (
+                    <SortableItem
+                      disabled={isSortingContainer}
+                      key={value}
+                      id={value}
+                      index={index}
+                      handle={handle}
+                      style={getItemStyles}
+                      wrapperStyle={wrapperStyle}
+                      renderItem={renderItem}
+                      containerId={containers.at(0)}
+                      getIndex={getIndex}
+                    />
+                  );
+                })}
+              </SortableContext>
+            </DroppableContainer>
+          </div>
+          
         </div>
         
       </Split>
@@ -571,7 +669,7 @@ export function MultipleContainers({
     return (
       <Container
         label={`Column ${containerId}`}
-        columns={columns}
+        columns={containerId === 'A' ? rightPanelColumns : leftPanelColumns}
         style={{
           height: '100%',
         }}
@@ -626,7 +724,3 @@ export function MultipleContainers({
     return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
   }
 }
-
-
-
-
