@@ -7,7 +7,7 @@ using https://jsonformatter.org/scss-to-css
   display: flex;
   flex-direction: column;
   grid-auto-rows: max-content;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-sizing: border-box;
   appearance: none;
   outline: none;
@@ -15,13 +15,13 @@ using https://jsonformatter.org/scss-to-css
   /* margin: 10px; */
   border-radius: 5px;
   /* min-height: 200px; */
-  transition: background-color 350ms ease;
+  /* transition: background-color 350ms ease; */
   background-color: rgba(246, 246, 246, 1);
   border: 1px solid rgba(0, 0, 0, 0.05);
   font-size: 1em;
   /* overflow-y: auto; */
   /* height: 100% */
-  max-height: 100vh;
+  /* max-height: 100vh; */
 }
 .Container ul {
   display: grid;
@@ -39,10 +39,10 @@ using https://jsonformatter.org/scss-to-css
   list-style-type: none;
   text-align: center;
 }
-.Container.scrollable ul {
+/* .Container.scrollable ul {
   overflow-y: auto;
-}
-.Container.placeholder {
+} */
+/* .Container.placeholder {
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -74,7 +74,7 @@ using https://jsonformatter.org/scss-to-css
 .Container:focus-visible {
   border-color: transparent;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0), 0 0px 0px 2px #4c9ffe;
-}
+} */
 .Header {
   display: flex;
   padding: 5px 20px;
@@ -89,12 +89,13 @@ using https://jsonformatter.org/scss-to-css
 .Header:hover .Actions > * {
   opacity: 1 !important;
 }
-.Actions {
+/* .Actions {
   display: flex;
-}
+} */
 /* .Actions > *:first-child:not(:last-child) {
-  opacity: 0;
+  opacity: 1;
 }
 .Actions > *:first-child:not(:last-child):focus-visible {
-  opacity: 1;
+  opacity: 0;
 } */
+

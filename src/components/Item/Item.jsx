@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
-import {Handle, Remove} from './components';
+// import {Handle, Remove} from './components';
 
 import styles from './Item.module.css';
 
@@ -9,67 +9,74 @@ export const Item = React.memo(
   React.forwardRef(
     (
       {
-        color,
-        dragOverlay,
+        // color,
+        // dragOverlay,
         dragging,
-        disabled,
-        fadeIn,
-        handle,
-        height,
+        // disabled,
+        // fadeIn,
+        // handle,
+        // height,
         index,
         listeners,
-        onRemove,
-        renderItem,
-        sorting,
-        style,
+        // onRemove,
+        // renderItem,
+        // sorting,
+        // style,
         transition,
         transform,
         value,
-        wrapperStyle,
-        ...props
+        // wrapperStyle,
+        // ...props
       },
       ref
     ) => {
-      useEffect(() => {
-        if (!dragOverlay) {
-          return;
-        }
+      // useEffect(() => {
+      //   // if (!dragOverlay) {
+      //   //   return;
+      //   // }
 
-        document.body.style.cursor = 'grabbing';
+      //   document.body.style.cursor = 'grabbing';
 
-        return () => {
-          document.body.style.cursor = '';
-        };
-      }, [dragOverlay]);
-
-      return renderItem ? (
-        renderItem({
-          dragOverlay: Boolean(dragOverlay),
-          dragging: Boolean(dragging),
-          sorting: Boolean(sorting),
-          index,
-          fadeIn: Boolean(fadeIn),
-          listeners,
-          ref,
-          style,
-          transform,
-          transition,
-          value,
-        })
-      ) : (
+      //   return () => {
+      //     document.body.style.cursor = '';
+      //   };
+      // }, [dragOverlay]);
+      return (
+          // renderItem ? (
+      //   renderItem({
+      //     // dragOverlay: Boolean(dragOverlay),
+      //     dragging: Boolean(dragging),
+      //     sorting: Boolean(sorting),
+      //     index,
+      //     fadeIn: Boolean(fadeIn),
+      //     listeners,
+      //     ref,
+      //     style,
+      //     transform,
+      //     transition,
+      //     value,
+      //   })
+      // ) : (
         <li
           className={classNames(
-            styles.Wrapper,
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay
+            // styles.Wrapper,
+            // fadeIn && styles.fadeIn,
+            // sorting && styles.sorting,
+            // dragOverlay && styles.dragOverlay
+            styles.Item,
+            dragging && styles.dragging,
           )}
           style={
             {
-              ...wrapperStyle,
-              transition: [transition, wrapperStyle?.transition]
-                .filter(Boolean)
-                .join(', '),
+              // ...wrapperStyle,
+              height: '50px',
+              width: '50px',
+              // transition: [transition, wrapperStyle?.transition]
+              // transition: [transition]
+              //   // .filter(Boolean)
+              //   .join(', ')
+              // transition: 'transform 400ms ease',
+              transition,
               '--translate-x': transform
                 ? `${Math.round(transform.x)}px`
                 : undefined,
@@ -83,34 +90,38 @@ export const Item = React.memo(
                 ? `${transform.scaleY}`
                 : undefined,
               '--index': index,
-              '--color': color,
-            }
+              // '--color': color,
+            } 
           }
           ref={ref}
+          data-cypress='draggable-item'
+          {...listeners}
+          tabIndex={0}
         >
-          <div
+          {/* <div
             className={classNames(
               styles.Item,
               dragging && styles.dragging,
-              handle && styles.withHandle,
-              dragOverlay && styles.dragOverlay,
-              disabled && styles.disabled,
+              // handle && styles.withHandle,
+              // dragOverlay && styles.dragOverlay,
+              // disabled && styles.disabled,
               // color && styles.color
             )}
-            style={style}
+            // style={style}
             data-cypress="draggable-item"
-            {...(!handle ? listeners : undefined)}
-            {...props}
-            tabIndex={!handle ? 0 : undefined}
-          >
+            // {...(!handle ? listeners : undefined)}
+            {...listeners}
+            // {...props}
+            tabIndex={0}
+          > */}
             {value}
-            <span className={styles.Actions}>
+            {/* <span className={styles.Actions}>
               {onRemove ? (
                 <Remove className={styles.Remove} onClick={onRemove} />
               ) : null}
               {handle ? <Handle {...listeners} /> : null}
-            </span>
-          </div>
+            </span> */}
+          {/* </div> */}
         </li>
       );
     }
