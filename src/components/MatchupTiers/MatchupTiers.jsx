@@ -2,7 +2,7 @@ import React from 'react'
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
 import classNames from 'classnames';
-import { Remove } from '../Item/components/Remove'
+import { RemoveButton } from '../RemoveButton';
 
 import styles from './MatchupTiers.module.css'
 import { CharacterCard } from '../CharacterCard';
@@ -21,7 +21,7 @@ export const MatchupTiers = ({
     >
       {containers.slice(1,containers.length).map( (containerId) => {
         return (
-          <SingleMatchup
+          <SingleMatchupTier
             key={containerId}
             containerId={containerId}
             columns={leftPanelColumns}
@@ -34,16 +34,19 @@ export const MatchupTiers = ({
 }
 
 
-export const SingleMatchup = ({
+export const SingleMatchupTier = ({
   containerId,
   columns,
   items,
-  // onRemove, might need to pass a method that has access to Parent state
+  // onRemove, might need to pass a method that has access to parent state
 }) => {
 
   const onRemove = () => {
     // implement 
   }
+  
+  // hooks can't be called in a callback, so I had to make SingleMatchupTier it's own component 
+  // or the following hook would have been in the callback on lines 22-31
   const { setNodeRef } = useDroppable({ id: containerId })
 
   return (
@@ -52,23 +55,15 @@ export const SingleMatchup = ({
         style={{ '--columns': columns }}
         className={classNames(styles.Container)}
       >
-        {
-        // ================================================================= 
-        // Container Header
-        // =================================================================
-        }
+        { /* Container Header */ }
         <div className={styles.Header}>
           {containerId}
           <div className={styles.Actions}>
-            <Remove onClick={onRemove} />
+            <RemoveButton onClick={onRemove} />
           </div>
         </div>
         
-        {
-        // ================================================================= 
-        // Character cards shown in the container
-        // =================================================================
-        }
+        { /* Draggable character cards */ }
         <ul>
           <SortableContext 
             items={items[containerId]} 

@@ -1,12 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {createPortal, unstable_batchedUpdates} from 'react-dom';
 import {
   closestCenter,
   pointerWithin,
   rectIntersection,
   DndContext,
-  DragOverlay,
-  defaultDropAnimation,
   getFirstCollision,
   KeyboardSensor,
   MouseSensor,
@@ -16,89 +13,37 @@ import {
   MeasuringStrategy,
 } from '@dnd-kit/core';
 import {
-  SortableContext,
   arrayMove,
-  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {coordinateGetter as multipleContainersCoordinateGetter} from './multipleContainersKeyboardCoordinates';
-
-import {Item} from '../Item';
-import {Container} from '../Container'
-
-import { DroppableContainer } from '../DroppableContainer'
-
-import { SortableItem } from '../SortableItem'
-
-import { getColor } from '../../utilities';
-
+import { coordinateGetter } from './multipleContainersKeyboardCoordinates';
 import Split from 'react-split';
 
 import './MultipleContainers.css'
 
-import { characterList, findCharacterById, characters } from '../../entities/characters';
-import { CharacterCard } from '../CharacterCard/CharacterCard';
 import { MatchupTiers } from '../MatchupTiers/MatchupTiers';
 import { LeftHeader } from '../LeftHeader/LeftHeader';
+import { RightHeader } from '../RightHeader/RightHeader';
+import { UnplacedCharacters } from '../UnplacedCharacters/UnplacedCharacters';
 
-const dropAnimation = {
-  ...defaultDropAnimation,
-  dragSourceOpacity: 0.5,
-};
+import { characterList } from '../../entities/characters'
+import { RenderDragOverlay } from '../RenderDragOverlay/RenderDragOverlay';
 
-export const TRASH_ID = 'void';
-const PLACEHOLDER_ID = 'placeholder';
-
-
-
-export function MultipleContainers({
-  adjustScale = false,
-  cancelDrop,
-  // handle = false,
-  items: initialItems,
-  containerStyle,
-  coordinateGetter = multipleContainersCoordinateGetter,
-  // getItemStyles = () => ({}),
-  // wrapperStyle = () => ({}),
-  minimal = false,
-  modifiers,
-  renderItem,
-  strategy = verticalListSortingStrategy,
-  vertical = false,
-  scrollable,
-}) {
+export const MultipleContainers = () => {
   const [items, setItems] = useState(   
-    () =>
-      initialItems ?? {
-        // unplaced: characterList.map(item => item.id.toString()),
-        unplaced: [],
-        // unsure: [],
-        // minus6: [],
-        // minus5point5: [],
-        // minus5: [],
-        // minus4point5: [],
-        // minus4: [],
-        // minus3point5: [],
-        // minus3: [],
-        // minus2point5: [],
-        minus2: ['100'],
-        // minus2: characterList.map(item => item.id.toString()),
-        // minus1point5: [],
-        minus1: ['101'],
-        // minus0point5: [],
-        even: ['102'],
-        // plus0point5: [],
-        plus1: ['103'],
-        // plus1point5: [],
-        plus2: ['104'],
-      }
+    () => ({
+      unplaced: characterList.map(item => item.id.toString()),
+      minus2: [],
+      minus1: [],
+      even: [],
+      plus1: [],
+      plus2: [],
+    })
   );
 
   const [containers, setContainers] = useState(Object.keys(items));
   const [activeId, setActiveId] = useState(null);
   const lastOverId = useRef(null);
-  const recentlyMovedToNewContainer = useRef(false);
-  const isSortingContainer = activeId ? containers.includes(activeId) : false;
-  
+  const recentlyMovedToNewContainer = useRef(false);  
   
   const leftPanelRef = useRef();
   const rightPanelRef = useRef();
@@ -191,18 +136,6 @@ export function MultipleContainers({
     return Object.keys(items).find((key) => items[key].includes(id));
   };
 
-  // const getIndex = (id) => {
-  //   const container = findContainer(id);
-
-  //   if (!container) {
-  //     return -1;
-  //   }
-
-  //   const index = items[container].indexOf(id);
-
-  //   return index;
-  // };
-
   const onDragCancel = () => {
     if (clonedItems) {
       // Reset items to their original state in case items have been
@@ -283,10 +216,6 @@ export function MultipleContainers({
       onDragOver={({active, over}) => {
         const overId = over?.id;
 
-        if (!overId || overId === TRASH_ID || active.id in items) {
-          return;
-        }
-
         const overContainer = findContainer(overId);
         const activeContainer = findContainer(active.id);
 
@@ -361,34 +290,6 @@ export function MultipleContainers({
           return;
         }
 
-        if (overId === TRASH_ID) {
-          setItems((items) => ({
-            ...items,
-            [activeContainer]: items[activeContainer].filter(
-              (id) => id !== activeId
-            ),
-          }));
-          setActiveId(null);
-          return;
-        }
-
-        if (overId === PLACEHOLDER_ID) {
-          const newContainerId = getNextContainerId();
-
-          unstable_batchedUpdates(() => {
-            setContainers((containers) => [...containers, newContainerId]);
-            setItems((items) => ({
-              ...items,
-              [activeContainer]: items[activeContainer].filter(
-                (id) => id !== activeId
-              ),
-              [newContainerId]: [active.id],
-            }));
-            setActiveId(null);
-          });
-          return;
-        }
-
         const overContainer = findContainer(overId);
 
         if (overContainer) {
@@ -409,10 +310,7 @@ export function MultipleContainers({
 
         setActiveId(null);
       }}
-      cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
-      modifiers={modifiers}
-      // autoScroll={true}
     >
       <Split 
         style={{
@@ -426,220 +324,39 @@ export function MultipleContainers({
       >
         <div ref={leftPanelRef}
           style={{
-            // display: 'inline-grid',
             boxSizing: 'border-box',
-            // padding: 20,
-            gridAutoFlow: vertical ? 'row' : 'column',
+            gridAutoFlow: 'row',
             height: '100%',
           }}
         >
           <LeftHeader />
-
           <MatchupTiers 
             containers={containers}
             leftPanelColumns={leftPanelColumns}
             items={items}
           />
-
         </div>
 
           
         <div ref={rightPanelRef}
           style={{
-            // display: 'inline-grid',
             boxSizing: 'border-box',
-            // padding: 20,
-            gridAutoFlow: vertical ? 'row' : 'column',
+            gridAutoFlow: 'row',
             height: '100%',
-            // width: 'calc(50% - 5px)'
           }}
         >
-          <div // className='header2'
-            style={{
-              height: '50px',
-              backgroundColor: 'DarkSlateGray',
-              color: 'white',
-              textAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <input type='text' placeholder='search bar'/> <button>sort</button>
-          </div>
-          <div // className='unplacedCharacters'
-            style={{
-              overflowY: 'auto',
-              height: 'calc(100vh - 50px)'
-              // height: '100px',
-            }}
-          >
-            {/* <div style={{height: '1000px'}}></div> */}
-            <DroppableContainer
-              // key={containers.at(0)}
-              id={containers.at(0)}
-              // label={minimal ? undefined : `Column ${containers.at(0)}`}
-              columns={rightPanelColumns}
-              items={items[containers.at(0)]}
-              // scrollable={scrollable}
-              // style={containerStyle}
-              // unstyled={minimal}
-              // onRemove={() => {}}
-            >
-              <SortableContext items={items[containers.at(0)]} strategy={strategy}>
-                {items[containers.at(0)].map((value, index) => {
-                  return (
-                    
-
-                    <CharacterCard
-                      key={value} 
-                      id={value}
-                      index={index}
-                    />
-                    
-                  );
-                })}
-              </SortableContext>
-            </DroppableContainer>
-          </div>
-          
+          <RightHeader />
+          <UnplacedCharacters 
+            containerId={containers[0]}
+            items={items}
+            columns={rightPanelColumns}
+          />
         </div>
         
       </Split>
-      {createPortal(
-        <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>  
-          {activeId
-            ? renderSortableItemDragOverlay(activeId)
-            : null}
-        </DragOverlay>,
-        document.body
-      )}
+      
+      { /* Displays the translucent "ghost" card when dragging an item */ }
+      <RenderDragOverlay activeId={activeId}/>
     </DndContext>
   );
-
-  // <SortableItem
-  //                     disabled={isSortingContainer}
-  //                     key={value}
-  //                     id={value}
-  //                     index={index}
-  //                     // handle={handle}
-  //                     // style={getItemStyles}
-  //                     // wrapperStyle={wrapperStyle}
-  //                     renderItem={renderItem}
-  //                     containerId={containers.at(0)}
-  //                     // getIndex={getIndex}
-  //                   />
-
-  function renderSortableItemDragOverlay(id) {
-    return (
-      <Item
-        value={id}
-        // handle={handle}
-        // style={getItemStyles({
-        //   containerId: findContainer(id),
-        //   overIndex: -1,
-        //   index: getIndex(id),
-        //   value: id,
-        //   isSorting: true,
-        //   isDragging: true,
-        //   isDragOverlay: true,
-        // })}
-        // color={getColor(id)}
-        // wrapperStyle={wrapperStyle({index: 0})}
-        // renderItem={renderItem}
-        // dragOverlay
-      />
-    );
-  }
-
-  // function renderContainerDragOverlay(containerId) {
-  //   return (
-  //     <Container
-  //       label={`Column ${containerId}`}
-  //       columns={containerId === 'A' ? rightPanelColumns : leftPanelColumns}
-  //       style={{
-  //         height: '100%',
-  //       }}
-  //       shadow
-  //       unstyled={false}
-  //     >
-  //       {items[containerId].map((item, index) => (
-  //         <Item
-  //           key={item}
-  //           value={item}
-  //           handle={handle}
-  //           style={getItemStyles({
-  //             containerId,
-  //             overIndex: -1,
-  //             index: getIndex(item),
-  //             value: item,
-  //             isDragging: false,
-  //             isSorting: false,
-  //             isDragOverlay: false,
-  //           })}
-  //           color={getColor(item)}
-            // wrapperStyle={wrapperStyle({index})}
-  //           renderItem={renderItem}
-  //         />
-  //       ))}
-  //     </Container>
-  //   );
-  // }
-
-
-  function getNextContainerId() {
-    const containerIds = Object.keys(items);
-    const lastContainerId = containerIds[containerIds.length - 1];
-
-    return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
-  }
 }
-
-
-{/* <div 
-style={{
-  overflowY: 'auto',
-  height: 'calc(100vh - 100px)'
-}}
->
-  {containers.map((containerId, index) => {
-    if (index === 0) return;
-    return (
-      <DroppableContainer
-        key={containerId}
-        id={containerId}
-        label={minimal ? undefined : `${containerId}`}
-        columns={leftPanelColumns}
-        items={items[containerId]}
-        scrollable={scrollable}
-        style={containerStyle}
-        unstyled={minimal}
-        onRemove={() => {}}
-      >
-        <SortableContext items={items[containerId]} strategy={strategy}>
-          {items[containerId].map((value, index) => {
-            return (
-              <SortableItem
-                disabled={isSortingContainer}
-                key={value}
-                id={value}
-                index={index}
-                handle={handle}
-                style={getItemStyles}
-                wrapperStyle={wrapperStyle}
-                renderItem={renderItem}
-                containerId={containerId}
-                getIndex={getIndex}
-              />
-            );
-          })}
-        </SortableContext>
-      </DroppableContainer>
-    )
-  })}
-</div> */}
-
-                    {/* <CharacterCard
-                      key={value} 
-                      id={value}
-                      index={index}
-                    /> */}

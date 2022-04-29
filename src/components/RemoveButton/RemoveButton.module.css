@@ -1,8 +1,3 @@
-/*
-Created by converting https://github.com/clauderic/dnd-kit/blob/master/stories/components/Item/components/Action/Action.module.css
-using https://jsonformatter.org/scss-to-css
-*/
-
 .Action {
   display: flex;
   width: 12px;
