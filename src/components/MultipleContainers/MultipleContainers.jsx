@@ -169,20 +169,17 @@ export const MultipleContainers = () => {
   const determinePanelColumns = (panelRef) => {
     if (!panelRef.current?.offsetWidth) return;
     const width = panelRef.current?.offsetWidth
-    const itemWidth = 50
-    const border = 1 // MAGIC NUMBER WARNING! should grab from DroppableContainer css somehow
-    const margin = 0 // MAGIC NUMBER WARNING! should grab directly from DroppableContainer css somehow
-    const paddingLeft = 10 // MAGIC NUMBER WARNING! should grab directly from DroppableContainer css somehow
-    const paddingRight = 10 // MAGIC NUMBER WARNING! should grab directly from DroppableContainer css somehow
-    const gridGap = 5 // MAGIC NUMBER WARNING! should grab directly from DroppableContainer css somehow
-    const scrollbarWidth = 0 // MAGIC NUMBER WARNING!
+    const itemWidth = 50 // MAGIC NUMBER WARNING! should grab from css somehow
+    const border = 1 // MAGIC NUMBER WARNING! should grab from css somehow
+    const margin = 0 // MAGIC NUMBER WARNING! should grab from css somehow
+    const paddingLeft = 10 // MAGIC NUMBER WARNING! should grab from css somehow
+    const paddingRight = 10 // MAGIC NUMBER WARNING! should grab from css somehow
+    const gridGap = 5 // MAGIC NUMBER WARNING! should grab from css somehow
+    const scrollbarWidth = 0 // MAGIC NUMBER WARNING! should grab from css somehow
     const fixedWidth = width - 2*border - 2*margin - paddingLeft - paddingRight - scrollbarWidth
     return Math.floor(fixedWidth/(itemWidth + 2*gridGap))
   }
-
-  /**
-   * Helper function
-   */
+  
   const updatePanelWidths = () => {
     setLeftPanelColumns(determinePanelColumns(leftPanelRef))
     setRightPanelColumns(determinePanelColumns(rightPanelRef))
@@ -193,12 +190,11 @@ export const MultipleContainers = () => {
     updatePanelWidths()
   }, [leftPanelWidth, rightPanelWidth])
   
-  // update panel widths whenver we resize the window
+  // update panel widths whenver we resize the window; to do this, stick an event listener for 'resize' on component mount
   useEffect( () => {
     window.addEventListener('resize', updatePanelWidths)
     return () => window.removeEventListener('resize', updatePanelWidths);
-  }, [updatePanelWidths])
-
+  }, [updatePanelWidths]) // you get a warning if you don't put updatePanelWidths in the dependency array
 
   return (
     <DndContext
@@ -313,6 +309,7 @@ export const MultipleContainers = () => {
       onDragCancel={onDragCancel}
     >
       <Split 
+        className='test'
         style={{
           display:'flex', 
           flexDirection:'row', 

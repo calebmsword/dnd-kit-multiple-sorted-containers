@@ -16,7 +16,7 @@ export const CharacterCard = React.memo( ({ id, index }) => {
     <li
       ref={setNodeRef}
       className={classNames(
-        styles.Item,
+        styles.CharacterCard,
         isDragging && styles.dragging
       )}
       style={{
@@ -38,7 +38,7 @@ export const CharacterCard = React.memo( ({ id, index }) => {
       data-cypress='draggable-item'
       {...listeners}
     >
-        {id /* once we use images, we will make li a self-closing tag */} 
+      {id /* once we use images, we will make li a self-closing tag */} 
     </li>
   );
 })

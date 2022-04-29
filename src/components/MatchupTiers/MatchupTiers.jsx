@@ -33,7 +33,6 @@ export const MatchupTiers = ({
   )
 }
 
-
 export const SingleMatchupTier = ({
   containerId,
   columns,
@@ -45,41 +44,35 @@ export const SingleMatchupTier = ({
     // implement 
   }
   
-  // hooks can't be called in a callback, so I had to make SingleMatchupTier it's own component 
+  // hooks can't be called in a callback, so I had to make SingleMatchupTier its own component 
   // or the following hook would have been in the callback on lines 22-31
   const { setNodeRef } = useDroppable({ id: containerId })
 
   return (
     <div
-        ref={setNodeRef}
-        style={{ '--columns': columns }}
-        className={classNames(styles.Container)}
-      >
-        { /* Container Header */ }
-        <div className={styles.Header}>
-          {containerId}
-          <div className={styles.Actions}>
-            <RemoveButton onClick={onRemove} />
-          </div>
-        </div>
-        
-        { /* Draggable character cards */ }
-        <ul>
-          <SortableContext 
-            items={items[containerId]} 
-            strategy={rectSortingStrategy}
-          >
-            {items[containerId].map( (value, index) => {
-              return (
-                <CharacterCard key={value} id={value} index={index} />
-              );
-            })}
-          </SortableContext>
-        </ul>
+      ref={setNodeRef}
+      style={{ '--columns': columns }}
+      className={classNames(styles.MatchupTierContainer)}
+    >
+      { /* Container Header */ }
+      <div className={styles.MatchupTierHeader}>
+        {containerId}
+        <RemoveButton onClick={onRemove} />
       </div>
+      
+      { /* Draggable character cards */ }
+      <ul>
+        <SortableContext 
+          items={items[containerId]} 
+          strategy={rectSortingStrategy}
+        >
+          {items[containerId].map( (value, index) => {
+            return (
+              <CharacterCard key={value} id={value} index={index} />
+            );
+          })}
+        </SortableContext>
+      </ul>
+    </div>
   )
 }
-
-// export function Remove() {
-//   return <div>Remove</div>
-// }

@@ -22,7 +22,7 @@ export const UnplacedCharacters = ({
       <div
         ref={setNodeRef}
         style={{ '--columns': columns }}
-        className={classNames(styles.Container)}
+        className={classNames(styles.UnplacedContainer)}
       > 
         <ul>
           <SortableContext 
